@@ -1,0 +1,14 @@
+# Ignore the massive dependency folders
+frontend/node_modules
+venv/
+__pycache__/
+*.pyc
+
+# Ignore Docker storage and secrets
+postgres_data/
+.env
+.DS_Store
+
+# Ignore database files
+*.sqlite3
+*.log

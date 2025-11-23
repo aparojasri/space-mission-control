@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5435,
+            "driver": "PostgreSQL",
+            "name": "mission-control",
+            "database": "mission_control",
+            "username": "skyroot_dev"
+        }
+    ]
+}

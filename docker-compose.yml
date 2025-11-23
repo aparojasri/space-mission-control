@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # 1. THE DATABASE
+  db:
+    image: postgres:15
+    container_name: mission_db
+    environment:
+      POSTGRES_DB: mission_control
+      POSTGRES_USER: space_dev
+      POSTGRES_PASSWORD: secure_password_123
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U space_dev -d mission_control"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. THE BACKEND API
+  # 2. THE BACKEND API
+  backend:
+    build:
+      context: .              # <--- CHANGED: Look at main folder (where manage.py is)
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app                # <--- CHANGED: Mount main folder so it sees manage.py
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+
+  # 3. THE FRONTEND DASHBOARD
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  # 4. THE SIMULATION
+  simulation:
+    build:
+      context: ./simulation
+      dockerfile: Dockerfile
+    container_name: simulation
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+
+volumes:
+  postgres_data:

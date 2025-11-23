@@ -1,0 +1,224 @@
+/* --- GLOBAL RESET & VARIABLES --- */
+:root {
+  --neon-green: #00ff41;
+  --alert-red: #ff3b3b;
+  --warning-orange: #ff9f43;
+  --glass-bg: rgba(10, 15, 25, 0.9);
+  --panel-border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box; /* Prevents padding from breaking layout */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  /* Animated Starfield Effect */
+  background-image: 
+    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+    radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+  background-size: 550px 550px, 350px 350px, 250px 250px;
+  font-family: 'Segoe UI', 'Roboto', monospace;
+  color: white;
+  overflow-x: hidden; /* No side scrolling */
+  overflow-y: auto;   /* Allow vertical scroll if needed */
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 1. LAUNCH OVERLAY (START SCREEN) --- */
+.launch-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Always on top */
+}
+
+.btn-launch {
+  background: transparent;
+  color: var(--neon-green);
+  border: 2px solid var(--neon-green);
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  font-family: monospace;
+  letter-spacing: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 15px var(--neon-green);
+  text-transform: uppercase;
+}
+
+.btn-launch:hover {
+  background: var(--neon-green);
+  color: black;
+  box-shadow: 0 0 40px var(--neon-green);
+}
+
+/* --- 2. MAIN DASHBOARD GRID --- */
+.dashboard-grid {
+  display: grid;
+  /* Sidebar Left (280px) - Center (Auto) - Sidebar Right (280px) */
+  grid-template-columns: 280px 1fr 280px; 
+  gap: 15px;
+  padding: 15px;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+/* Responsive: Stack vertically on smaller screens (Laptops/Tablets) */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+/* --- 3. GLASS PANELS --- */
+.glass-panel {
+  background: var(--glass-bg);
+  border: var(--panel-border);
+  border-radius: 8px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+/* --- 4. CONTROLS & BUTTONS --- */
+.control-wrapper {
+  position: relative; /* Anchor for tooltip */
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-control {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #555;
+  color: white;
+  padding: 10px;
+  margin-top: 5px;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-control:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: white;
+}
+
+.btn-danger {
+  border-color: var(--alert-red);
+  color: var(--alert-red);
+}
+
+.btn-danger:hover {
+  background: var(--alert-red);
+  color: white;
+}
+
+/* --- 5. TEXTBOOK TOOLTIPS (HOVER INFO) --- */
+.tech-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  width: 300px; /* Wider for reading */
+  background-color: rgba(0, 0, 0, 0.98);
+  border: 1px solid var(--neon-green);
+  color: #ccc;
+  text-align: left;
+  padding: 15px;
+  border-radius: 4px;
+  
+  /* Position: Floating to the right */
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  left: 105%; /* Push it to the right of the button */
+  
+  /* Animation */
+  transition: opacity 0.2s, visibility 0.2s;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  pointer-events: none; /* Don't block clicks */
+}
+
+/* Tooltip Header */
+.tech-tooltip h4 {
+  margin: 0 0 8px 0;
+  color: var(--neon-green);
+  text-transform: uppercase;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.tech-tooltip strong {
+  color: white;
+}
+
+/* Show Tooltip on Hover */
+.control-wrapper:hover .tech-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Danger Tooltip Variation */
+.control-wrapper.danger .tech-tooltip {
+  border-color: var(--alert-red);
+  box-shadow: 0 0 20px rgba(255, 59, 59, 0.2);
+}
+.control-wrapper.danger .tech-tooltip h4 {
+  color: var(--alert-red);
+}
+
+/* Responsive Tooltip: Move to bottom on small screens */
+@media (max-width: 1200px) {
+  .tech-tooltip {
+    left: 0;
+    top: 100%;
+    width: 100%;
+    z-index: 2000;
+  }
+}
+
+/* --- 6. METRICS & BADGES --- */
+.metric-huge {
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+.status-badge {
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: black;
+}
